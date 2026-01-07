@@ -1,123 +1,110 @@
-<p align="center"> <img src="banner.png" alt="ResumeIQ Banner" width="100%"> </p>
+<p align="center">
+  <img src="assets/banner.png" alt="ResumeIQ Banner" width="100%">
+</p>
 
-ResumeIQ is a premium AI-powered resume screening web application that helps recruiters and hiring teams automatically analyze, rank, and recommend candidates based on job descriptions using Natural Language Processing (NLP) and Machine Learning.
+# ResumeIQ – AI Resume Screening Platform
 
-Designed with a modern SaaS-style UI, ResumeIQ works seamlessly on desktop and mobile devices.
+AI-powered resume screening system that intelligently analyzes, ranks, and recommends candidates using NLP & Machine Learning.
 
-🚀 Key Features
+## 🔍 Overview
 
-📄 Resume Parsing – Supports PDF & DOCX formats
+ResumeIQ is a premium AI-powered resume screening web application designed to help recruiters and hiring teams automate candidate evaluation.
 
-🧠 NLP Preprocessing – Tokenization, stopword removal, text cleaning
+By leveraging Natural Language Processing (NLP) and Machine Learning techniques, ResumeIQ matches resumes against job descriptions and provides ranked recommendations with visual insights.
 
-📊 TF-IDF Vectorization – Intelligent text representation
+The platform is optimized for both desktop and mobile devices and follows a modern SaaS-style UI design.
 
-🔍 Cosine Similarity Matching – Accurate JD–Resume matching
+---
 
-🏆 Automatic Candidate Ranking
+## 📸 Product Screenshots
 
-✅ Hiring Recommendations
+### 🧠 ResumeIQ – AI Resume Screening Interface
+<p align="center">
+  <img src="assets/screenshots/hero.png" width="90%" alt="ResumeIQ Hero Section">
+</p>
 
-Strongly Recommended
+---
 
-Consider
+### ✍️ Job Description & Resume Upload
+<p align="center">
+  <img src="assets/screenshots/input.png" width="90%" alt="Job Description and Resume Upload">
+</p>
 
-Not Recommended
+---
 
-📈 Interactive Visualizations
+### 🏆 Candidate Ranking Dashboard
+<p align="center">
+  <img src="assets/screenshots/ranking.png" width="90%" alt="Candidate Ranking Table">
+</p>
 
-🎨 Premium, Responsive UI
+---
 
-📱 Mobile & Desktop Friendly
+### 📈 Match Percentage Comparison
+<p align="center">
+  <img src="assets/screenshots/match_comparison.png" width="90%" alt="Match Comparison Chart">
+</p>
 
-🧠 How ResumeIQ Works
+---
 
-Enter Job Description
+## ✨ Key Features
 
-Upload Multiple Resumes
+- 📄 Resume parsing with support for PDF & DOCX formats  
+- 🧹 Advanced NLP preprocessing (tokenization, stopword removal, text cleaning)  
+- 📊 TF-IDF based vectorization for intelligent text representation  
+- 🔍 Cosine similarity matching between job descriptions and resumes  
+- 🏆 Automated candidate ranking & recommendation system  
+- 📈 Interactive visual analytics and dashboards  
+- 📱 Fully responsive UI (desktop & mobile friendly)
 
-Text Extraction & NLP Processing
+## 🧠 System Architecture
 
-Similarity Score Calculation
+The application follows a modular and scalable architecture:
 
-Candidate Ranking & Recommendation
+- `app.py` – Streamlit UI & application controller  
+- `core/` – Core NLP and ML logic  
+  - `resume_parser.py` – Resume text extraction  
+  - `preprocessing.py` – NLP preprocessing pipeline  
+  - `matching.py` – TF-IDF vectorization & similarity scoring  
+- `assets/` – UI assets, banner, and screenshots  
+- `sample_data/` – Sample resumes for testing  
 
-Insights & Visual Analytics
+This separation ensures clean code, reusability, and maintainability.
 
-🖥️ Screenshots
+## 🛠️ Tech Stack
 
-📌 Add screenshots of your app UI in a folder (e.g., screenshots/) and update paths below.
+- **Frontend:** Streamlit  
+- **Backend:** Python  
+- **NLP:** NLTK  
+- **Machine Learning:** Scikit-learn  
+- **Data Processing:** Pandas, NumPy  
+- **Visualization:** Streamlit Charts  
 
-🔹 Job Description & Resume Upload
-<p align="center"> <img src="screenshots/input.png" width="90%"> </p>
-🔹 Candidate Ranking Dashboard
-<p align="center"> <img src="screenshots/ranking.png" width="90%"> </p>
-🔹 Match Percentage Visualization
-<p align="center"> <img src="screenshots/chart.png" width="90%"> </p>
-🛠️ Tech Stack
+## 🚀 Installation & Setup
 
-Frontend & App Framework: Streamlit
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/rajlaljipandey/intelligent-resume-screening.git
+cd intelligent-resume-screening
 
-Programming Language: Python
+## 🔮 Future Enhancements
 
-NLP: NLTK
+- Semantic similarity using BERT / SBERT  
+- Skill extraction & gap analysis  
+- Candidate shortlisting export (CSV / PDF)  
+- Recruiter authentication & dashboards  
+- ATS integration
 
-Machine Learning: Scikit-learn
+## 👨‍💻 Developer
 
-Data Handling: Pandas
+**Raj Lalji Pandey**  
+Data Analyst | Machine Learning | NLP  
 
-Resume Parsing: pdfplumber, python-docx
+📧 Email: your_email@example.com  
+🔗 GitHub: https://github.com/rajlaljipandey  
+🔗 LinkedIn: https://www.linkedin.com/in/raj-lalji-pandey-51288a237/
 
-📂 Project Structure
-intelligent-resume-screening/
-│
-├── .streamlit/
-│   └── config.toml
-├── test_resumes/
-│   ├── rahul_resume.docx
-│   ├── priya_resume.docx
-│   └── amit_resume.docx
-├── screenshots/
-│   ├── input.png
-│   ├── ranking.png
-│   └── chart.png
-├── app.py
-├── banner.png
-├── requirements.txt
-└── README.md
+---
 
-▶️ Run the Project Locally
-# Install dependencies
-pip install -r requirements.txt
+© 2026 ResumeIQ – AI Resume Intelligence Platform  
+Built with ❤️ using Python & Streamlit
 
-# Run the Streamlit app
-streamlit run app.py
-
-🌐 Deployment
-
-This project is deployment-ready and can be hosted on:
-
-Streamlit Cloud
-
-AWS / Azure (via containerization)
-
-Any cloud VM supporting Python
-
-👨‍💻 Developer
-
-Raj Lalji Pandey
-📧 Email: rajlaljipandey@gmail.com
-
-🌐 GitHub: https://github.com/rajlaljipandey
-
-⭐ Support
-
-If you find this project useful:
-
-⭐ Star the repository
-
-🍴 Fork it
-
-💬 Share feedback
-
-🏁 ResumeIQ — Making hiring smarter with AI
