@@ -1,13 +1,10 @@
 import streamlit as st
-import pdfplumber
-import docx
-import re
-import nltk
 import pandas as pd
 
-from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+# ===== Core Imports (NEW MODULAR STRUCTURE) =====
+from core.resume_parser import extract_resume_text
+from core.preprocessing import preprocess_text
+from core.matching import calculate_similarity
 
 # ================= PAGE CONFIG =================
 st.set_page_config(
@@ -19,18 +16,13 @@ st.set_page_config(
 # ================= PREMIUM UI STYLES =================
 st.markdown("""
 <style>
-/* Background */
 .main {
     background: radial-gradient(circle at top, #020617, #020617 60%);
 }
-
-/* Center content */
 .block-container {
     max-width: 1150px;
     padding-top: 2.5rem;
 }
-
-/* HERO */
 .hero {
     text-align: center;
     padding: 3rem 1rem 2.5rem 1rem;
@@ -48,8 +40,6 @@ st.markdown("""
     max-width: 720px;
     margin: auto;
 }
-
-/* Glass Card */
 .card {
     background: rgba(255,255,255,0.05);
     backdrop-filter: blur(14px);
@@ -59,15 +49,11 @@ st.markdown("""
     margin-bottom: 1.8rem;
     box-shadow: 0 20px 40px rgba(0,0,0,0.45);
 }
-
-/* Section title */
 .section-title {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1rem;
 }
-
-/* Button */
 .stButton > button {
     background: linear-gradient(90deg, #6366f1, #38bdf8);
     color: white;
@@ -75,21 +61,12 @@ st.markdown("""
     border-radius: 14px;
     height: 3.3rem;
     border: none;
-    transition: all 0.2s ease;
 }
-.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(99,102,241,0.45);
-}
-
-/* Metrics */
 [data-testid="metric-container"] {
     background: rgba(255,255,255,0.05);
     border-radius: 14px;
     padding: 1rem;
 }
-
-/* Footer */
 .footer {
     text-align: center;
     margin-top: 4rem;
@@ -101,18 +78,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ================= CACHE STOPWORDS =================
-@st.cache_resource
-def load_stopwords():
-    try:
-        return set(stopwords.words("english"))
-    except LookupError:
-        nltk.download("stopwords")
-        return set(stopwords.words("english"))
-
-STOP_WORDS = load_stopwords()
-
-# ================= HERO SECTION =================
+# ================= HERO =================
 st.markdown("""
 <div class="hero">
     <h1>ResumeIQ</h1>
@@ -122,52 +88,6 @@ st.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
-
-# ================= RESUME PARSING =================
-def extract_text_from_pdf(file):
-    text = ""
-    with pdfplumber.open(file) as pdf:
-        for page in pdf.pages:
-            if page.extract_text():
-                text += page.extract_text() + " "
-    return text
-
-def extract_text_from_docx(file):
-    doc = docx.Document(file)
-    return " ".join([para.text for para in doc.paragraphs])
-
-def extract_resume_text(file):
-    if file.name.endswith(".pdf"):
-        return extract_text_from_pdf(file)
-    elif file.name.endswith(".docx"):
-        return extract_text_from_docx(file)
-    return ""
-
-# ================= NLP PREPROCESSING =================
-def preprocess_text(text):
-    text = text.lower()
-    text = re.sub(r"[^a-z\s]", " ", text)
-    tokens = text.split()
-    tokens = [w for w in tokens if w not in STOP_WORDS]
-    return " ".join(tokens)
-
-@st.cache_data(show_spinner=False)
-def get_cleaned_resume_text(file):
-    return preprocess_text(extract_resume_text(file))
-
-# ================= TF-IDF =================
-def calculate_similarity(job_desc, resume_texts):
-    vectorizer = TfidfVectorizer()
-    tfidf = vectorizer.fit_transform([job_desc] + resume_texts)
-    return cosine_similarity(tfidf[0:1], tfidf[1:])[0]
-
-def get_recommendation(score):
-    if score >= 60:
-        return "Strongly Recommended"
-    elif score >= 40:
-        return "Consider"
-    else:
-        return "Not Recommended"
 
 # ================= INPUT CARD =================
 st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -200,17 +120,24 @@ if analyze:
             jd_clean = preprocess_text(job_description)
 
             names, texts = [], []
-            for f in uploaded_files:
-                names.append(f.name)
-                texts.append(get_cleaned_resume_text(f))
+            for file in uploaded_files:
+                names.append(file.name)
+                raw_text = extract_resume_text(file)
+                texts.append(preprocess_text(raw_text))
 
             scores = calculate_similarity(jd_clean, texts)
 
             df = pd.DataFrame({
                 "Candidate": names,
-                "Match Percentage": (scores * 100).round(2),
+                "Match Percentage": (scores * 100).round(2)
             })
-            df["Recommendation"] = df["Match Percentage"].apply(get_recommendation)
+
+            df["Recommendation"] = df["Match Percentage"].apply(
+                lambda x: "Strongly Recommended" if x >= 60 else
+                          "Consider" if x >= 40 else
+                          "Not Recommended"
+            )
+
             df = df.sort_values("Match Percentage", ascending=False).reset_index(drop=True)
             df.insert(0, "Rank", df.index + 1)
 
@@ -222,7 +149,7 @@ if analyze:
             c2.metric("🏆 Top Match (%)", df["Match Percentage"].max())
             st.markdown('</div>', unsafe_allow_html=True)
 
-            # ================= BEST =================
+            # ================= BEST CANDIDATE =================
             best = df.iloc[0]
             st.markdown('<div class="card">', unsafe_allow_html=True)
             st.success(
